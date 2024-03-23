@@ -1,0 +1,506 @@
+{% extends "oscar/checkout/layout.html" %}
+{% load currency_filters %}
+{% load image_tags %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}
+    {% blocktrans with number=order.number %}
+        Order {{ number }}: confirmation
+    {% endblocktrans %} | {{ block.super }}
+{% endblock title %}
+
+
+
+{% block content %}
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+</head>
+
+<body>
+
+
+  <div class="invoice-box">
+    <div class="container">
+      <div class="row">
+        <div class="equalHWrap eqWrap top">
+          <div class="equalHW eq center logo-block">
+            <img src="/static/codefyn-5.0/assets/img/logo/logo.svg" alt=""><br>
+              <h2 class="right no-padding" id="InvoiceSumExVat" style="margin-right: 51%;font-size: 19px;margin-top: 1%;color: #000;font-style: italic;margin-bottom: 0%;">
+                E-commerce</h2>
+          </div>
+          <div class="equalHW eq title-block" style="margin-top: 5%;margin-bottom: 2%;">
+            <h3 class="right no-padding" id="InvoiceSumExVat" style="margin:0px;">Invoice# {{ order.number }} </h3><br>
+            <p class="right no-padding" id="InvoiceSumExVat" style="margin:0px;"> Invoice Date: {{ order.date_placed }}</p>
+          </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+          <div class="equalHWrap eqWrap nomargin-nopadding to-block">
+            <div class="equalHW eq nomargin-nopadding title">
+              Invoice Information
+            </div>
+          </div>
+          <div class="row">
+          {% block shipping_info %}
+            <div class="equalHWrap eqWrap">
+             {% if order.shipping_address %}
+              <div class="equalHW eq infoblock to-block">
+                <span id="CustomerName">Bill to :</span><br>
+                 <span id="CustomerCountry">Country : </span><br>
+                <span id="CustomerRef">City : </span><br>
+                <span id="AccountProject">Address :</span><br>
+                <span id="CustomerAddress">Email :</span><br>
+                <span id="CustomerPostalCode">Phone : </span><br>
+                <span id="CustomerRef">Instructions : </span>
+              </div>
+              <div class="equalHW eq infoblock from-block">
+                <span id="AccountName">{{ order.shipping_address.name }}</span><br>
+                <span id="AccountCountry">{{ order.shipping_address.country }}</span><br>
+                <span id="AccountRef">{{ order.shipping_address.city }}</span><br>
+                <span id="AccountProject">{{ order.shipping_address.line1 }}</span><br>
+                <span id="AccountAddress">{{ order.shipping_address.guest_email }}</span><br>
+                <span id="AccountPostalCode">{{ order.shipping_address.phone_number }}</span><br>
+                <span id="AccountProject">{{ order.shipping_address.notes|linebreaks }}</span><br>
+              </div>
+              {% else %}
+                <p>{% trans "No shipping address required." %}</p>
+              {% endif %}
+
+            </div>
+          {% endblock %}
+          </div>
+          <table class="table" style="border: 3px solid #ddd;">
+            <tr class="titles">
+              <th>ID</th>
+              <th>Item</th>
+              <th>Image</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th>Total</th>
+            </tr>
+           {% for line in order.lines.all %}
+            <tr class="item" id="ProductList">
+              <td id="Product"><span id="ProuductName">{{ line.id }}<span></span></span></td>
+              <td><span id="ProductNumUnits">
+                  {{ line.description }}
+                  </span>
+              </td>
+              <td><span id="ProductUnit">
+                {% with image=line.product.primary_image %}
+                    {% oscar_thumbnail image.original "200x200" upscale=False as thumb %}
+                        <img class="thumbnail" src="{{ thumb.url }}" alt="{{ product.get_title }}" style="width: 22%;">
+                {% endwith %}
+                  </span>
+              </td>
+              <td><span id="ProductUnitPrice">
+                   {% if show_tax_separately %}
+                        {{ line.line_price_before_discounts_excl_tax|currency:order.currency }}
+                   {% else %}
+                         {{ line.line_price_before_discounts_incl_tax|currency:order.currency }}
+                   {% endif %}
+              </span></td>
+              <td><span id="ProductDiscount">{{ line.quantity }}</span></td>
+              <td><span id="ProductTax">{{ order.total_incl_tax|currency:order.currency }}</span></td>
+            </tr>
+           {% endfor %}
+          </table>
+        </div>
+        <div class="row">
+          <div class="equalHWrap eqWrap" style="border-bottom: 2px solid #ccc;">
+            <div class="equalHW eq" style="margin-top: 4%;">
+                {% include 'oscar/order/partials/basket_totals.html' %}
+<!--              <table class="left" style="margin-bottom: 20px;width: 75%;font-size: 20px;">-->
+<!--                <tr style="line-height: 2;">-->
+<!--                  <td style="border-top: 2px solid #CCC;margin-right:10px;">Cart Total</td>-->
+<!--                  <td  style="border-top: 2px solid #CCC;margin-right:10px;">-->
+<!--                       {% if show_tax_separately %}-->
+<!--                           {{ order.basket_total_excl_tax|currency:order.currency }}-->
+<!--                       {% else %}-->
+<!--                            {{ order.basket_total_incl_tax|currency:order.currency }}-->
+<!--                       {% endif %}-->
+<!--                  </td>-->
+<!--                </tr>-->
+<!--                <tr style="line-height: 2;">-->
+<!--                  <td style="border-top: 2px solid #CCC;margin-right:10px;">Shipping charge</td>-->
+<!--                  <td  style="border-top: 2px solid #CCC;margin-right:10px;">-->
+<!--                       {% if show_tax_separately %}-->
+<!--                            {{ order.shipping_excl_tax|currency:order.currency }}-->
+<!--                       {% else %}-->
+<!--                             {{ order.shipping_incl_tax|currency:order.currency }}-->
+<!--                       {% endif %}-->
+<!--                  </td>-->
+<!--                </tr>-->
+<!--                <tr style="line-height: 2;">-->
+<!--                  <td style="border-top: 2px solid #CCC;margin-right:10px;">Payment</td>-->
+<!--                  <td  style="border-top: 2px solid #CCC;margin-right:10px;">Payment when you receive the product</td>-->
+<!--                </tr>-->
+<!--                <tr style="line-height: 2;">-->
+<!--                  <td style="border-top: 2px solid #CCC;margin-right:10px;">Order total</td>-->
+<!--                  <td style="border-top: 2px solid #CCC;margin-right:10px;">{{ order.total_incl_tax|currency:order.currency }}</td>-->
+<!--                </tr>-->
+<!--              </table>-->
+            </div>
+          </div>
+            <p class="massge">thanks for shopping with us !</p>
+          <div class="center">
+             <div class="card-footer bg-white">
+               <div class="Social-media">
+                  <a href="https://www.facebook.com/codefyn"><i class="bi bi-facebook"></i></a>
+                  <a href="https://www.codefyn.com"><i class="bi bi-globe"></i></a>
+                  <a href="https://wa.me/+917992200751"><i class="bi bi-whatsapp"></i></a>
+                  <a href="https://www.instagram.com/codefyn/"><i class="bi bi-instagram"></i></a>
+                  <a href="mailto:info@codefyn.com"><i class="bi bi-envelope-paper"></i></a>
+               </div>
+          </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+ {% block order_tracking %}
+        {% if not order.user %}
+            <div class="sub-header">
+                <h2>{% trans "Tracking your order" %}</h2>
+            </div>
+            <p>{% trans "You can track the status of your order" %}</p>
+            <a class="btn btn-primary" href="{% url 'customer:anon-order' order_number=order.number hash=order.verification_hash %}">{% trans "View order status" %}</a>.
+        {% endif %}
+    {% endblock %}
+
+
+    {% block order_actions %}
+
+        <div class="form-group" style="text-align: center !important;">
+            <div class="row print-container">
+                <div class="col-sm-3">
+                    <p><a onclick="window.print()" href="#" class="button btn-cart btn-block btn-lg">{% trans "Print this page" %}</a></p>
+                </div>
+                <div class="col-sm-3 col-sm-offset-4">
+                    <p><a href="{{ homepage_url }}" class="button btn-cart btn-block btn-lg">{% trans "Continue shopping" %}</a></p>
+                </div>
+            </div>
+        </div>
+    {% endblock order_actions %}
+</body>
+
+
+</html>
+
+<style>
+
+
+    /* TYPOGRAPHY */
+
+    .invoice-box h1 {
+      font-size: 2.5rem;
+    }
+    .invoice-box h2 {
+      font-size: 2rem;
+    }
+    .invoice-box h3 {
+      font-size: 1.375rem;
+    }
+    .invoice-box h4 {
+      font-size: 1.125rem;
+    }
+    .invoice-box h5 {
+      font-size: 1rem;
+    }
+    .invoice-box h6 {
+      font-size: 0.875rem;
+    }
+    .invoice-box p {
+      font-size: 1.125rem;
+      font-weight: 200;
+      line-height: 1.8;
+    }
+    .invoice-box .font-light {
+      font-weight: 300;
+    }
+    .invoice-box .font-regular {
+      font-weight: 400;
+    }
+    .invoice-box .font-heavy {
+      font-weight: 700;
+    }
+    /* POSITIONING */
+
+    .invoice-box .left {
+      text-align: left;
+    }
+    .invoice-box .right {
+      float: right;
+      text-align: right;
+    }
+    .invoice-box .center {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .invoice-box .justify {
+      text-align: justify;
+    }
+    /** standard padding**/
+
+    .invoice-box .no-padding {
+      padding: 0px;
+    }
+    .invoice-box .standard-padding {
+      padding: 20px;
+    }
+    .invoice-box .standard-padding-right {
+      padding-right: 20px;
+    }
+    .invoice-box .standard-padding-left {
+      padding-left: 20px;
+    }
+    .invoice-box .standard-padding-right {
+      padding-left: 20px;
+    }
+    .invoice-box .standard-padding-top {
+      padding-top: 20px;
+    }
+    .invoice-box .standard-padding-bottom {
+      padding-bottom: 20px;
+    }
+    .invoice-box .container {
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .invoice-box .row {
+      position: relative;
+      width: 100%;
+      margin-left: 0px !important;
+    }
+    .invoice-box .row [class^="col"] {
+      float: left;
+      margin: 0.5rem 2%;
+      min-height: 0.125rem;
+    }
+    .invoice-box .row::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    .invoice-box .hidden-sm {
+      display: none;
+    }
+    .invoice-box {
+      background: #ffffff;
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 30px;
+      border: 1px solid #002336;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      font-size: 16px;
+      line-height: 24px;
+      color: #002336;
+    }
+    .invoice-box .title {
+      margin-bottom: 0px;
+      padding-bottom: 0px;
+      margin-left: 10px;
+      margin-right: 10px;
+      font-weight: bold;
+      border-bottom: 1px solid #8B8B8B;
+      margin-bottom: 4px;
+    }
+    .invoice-box .infoblock {
+      margin-left: 10px;
+      margin-right: 10px;
+      margin-top: 0px;
+      padding-top: 0px;
+    }
+    .invoice-box .titles {
+      padding-top: 4px;
+      margin-top: 20px;
+      background: #DCDCDC;
+      font-weight: bold;
+    }
+    @media only screen and (max-width: 600px) {
+      .invoice-box table tr.top table td {
+        width: 100%;
+        display: block;
+        text-align: center;
+      }
+      .invoice-box table tr.information table td {
+        width: 100%;
+        display: block;
+        text-align: center;
+      }
+    }
+    /** RTL **/
+
+    .invoice-box .rtl {
+      direction: rtl;
+      font-family: "Lato", Tahoma, "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+    }
+    .invoice-box .rtl table {
+      text-align: right;
+    }
+    .invoice-box .rtl table tr td:nth-child(2) {
+      text-align: left;
+    }
+    .invoice-box .eqWrap {
+      display: flex;
+    }
+    .invoice-box .eq {
+      padding: 10px;
+    }
+    .invoice-box .item:nth-of-type(odd) {
+      background: #F9F9F9;
+    }
+    .invoice-box .item:nth-of-type(even) {
+      background: #fff;
+    }
+    .invoice-box .equalHW {
+      flex: 1;
+    }
+    .invoice-box .equalHM {
+      width: 32%;
+    }
+    .invoice-box .equalHMR {
+      width: 32%;
+      margin-bottom: 2%;
+    }
+    .invoice-box table.table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    .invoice-box .table th, .table td {
+      text-align: left;
+      padding: 0.25em;
+    }
+    .invoice-box .table tr {
+      border-bottom: 1px solid #DDD;
+    }
+    .invoice-box button:hover {
+      box-shadow: 0 0 4px rgba(3, 3, 3, 0.8);
+      opacity: 0.9;
+    }
+    .invoice-box .logo-img{
+         width: 46%;
+        margin-top: -13%;
+        margin-bottom: -14%;
+        margin-left: -55%;
+    }
+
+    .invoice-box .massge{
+        margin-top: 29px;
+        text-align: center;
+        font-size: 21px;
+        text-transform: capitalize;
+        color: #000;
+        font-weight: bold;
+    }
+
+
+    .invoice-box .Social-media{
+      display: flex;
+      justify-content: center;
+      margin-top: 1%;
+    }
+    .invoice-box .Social-media a{
+      display: flex;
+      background: #e3edf7;
+      height: 45px;
+      width: 45px;
+      margin: 0 15px;
+      border-radius: 8px;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none !important;
+      box-shadow: 6px 6px 10px -1px rgba(0,0,0,0.15),
+                  -6px -6px 10px -1px rgba(255,255,255,0.7);
+      border: 1px solid rgba(0, 0, 0, 0);
+      transition: transform 0.5s
+    }
+    .invoice-box .Social-media a i{
+      font-size: 50px
+      color:#777;
+      transition: transform 0.5s;
+    }
+    .invoice-box .Social-media a:hover{
+      box-shadow:inset 4px 4px 6px -1px rgba(0,0,0,0.2),
+                  inset -4px -4px 6px -1px rgba(255,255,255,0.7),
+                        -0.5px -0.5px 0px -1px rgba(255,255,255,1),
+                        0.5px 0.5px 0px rgba(0,0,0,0.15),
+                        0px 12px 10px -10px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255, 0, 0, 0.1);
+      transform: translateY(2px);
+    }
+    .invoice-box .Social-media a:hover i{
+      transform: scale(0.90);
+    }
+    .invoice-box .Social-media a:hover .fa-facebook{
+      color: #3b5998;
+    }
+    .invoice-box .Social-media a:hover .fa-twitter{
+      color: #00acee;
+    }
+    .invoice-box .Social-media a:hover .fa-whatsapp{
+      color: #4fce5d;
+    }
+    .invoice-box .Social-media a:hover .fa-instagram{
+      color: #f14843;
+    }
+    .invoice-box .Social-media a:hover .fa-youtube{
+      color: #f00;
+    }
+    .invoice-box .card-footer{
+        padding: .75rem 1.25rem;
+        border-top: 1px solid rgba(0,0,0,.125);
+    }
+
+    @media print {
+
+
+      .sidebar{
+          display: none;
+      }
+
+      .top_nav{
+           display: none;
+      }
+
+      .jtv-header-box{
+        display: none;
+      }
+
+      .logo-img {
+        width: 20%;
+        margin-left: 9%;
+        margin-top: 10%;
+      }
+
+      .navleft-container{
+        display: none;
+      }
+      footer .footer-inner{
+        display: none;
+      }
+
+      .form-group{
+        display: none;
+      }
+      .center{
+        display: none;
+      }
+    }
+      </style>
+{% endblock content %}
+
+{% block tracking %}
+    {% if send_analytics_event %}
+        {% include "oscar/partials/google_analytics_transaction.html" %}
+    {% endif %}
+{% endblock %}
+
+

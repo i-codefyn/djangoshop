@@ -1,0 +1,253 @@
+{% extends "oscar/layout_2_col.html" %}
+
+{% load basket_tags %}
+{% load static %}
+{% load category_tags %}
+{% load products %}
+{% load display_tags %}
+{% load image_tags %}
+{% load reviews_tags %}
+{% load history %}
+{% load currency_filters %}
+{% load reviews_tags %}
+{% load i18n %}
+{% load purchase_info_tags %}
+{% block title %}
+    {% if summary %}{{ summary }} |{% endif %} {{ block.super }}
+{% endblock %}
+
+{% block headertext %}{{ summary }}{% endblock %}
+
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ homepage_url }}">{% trans "Home" %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ summary }}</li>
+        </ol>
+    </nav>
+{% endblock breadcrumbs %}
+
+{% block content %}
+
+    <form method="get">
+        {# Render other search params as hidden inputs #}
+        {% for value in selected_facets %}
+            <input type="hidden" name="selected_facets" value="{{ value }}" />
+        {% endfor %}
+        <input type="hidden" name="q" value="{{ search_form.q.value|default_if_none:"" }}" />
+            {% if form %}
+                <div class="float-right">
+                    {% include "oscar/partials/form_field.html" with field=form.sort_by style='horizontal' %}
+                </div>
+            {% endif %}
+    </form>
+
+    {% if products %}
+        <!--shop  area start-->
+    <div class="shop_section shop_reverse">
+        <div class="">
+            <div class="row">
+                <div class="col-lg-3 col-md-12">
+                   <!--sidebar widget start-->
+                    <aside class="sidebar_widget">
+                        <div class="widget_inner">
+                            <div class="widget_list widget_categories">
+                                <h2> {% block browse_store_text %}{% trans "CATEGORIES" %}{% endblock %}</h2>
+                                <ul>
+                                <li class="widget_sub_categories">
+                                <a href="javascript:void(0)" data-toggle="collapse" data-target="#men">  {% category_tree depth=1 as tree_categories %}
+                                    {% if tree_categories %}
+                                        <div class="dropdown-divider"></div>
+                                        {% for tree_category in tree_categories %}
+                                            <a class="dropdown-item" href="{{ tree_category.get_absolute_url }}">{{ tree_category.name }}</a>
+                                        {% endfor %}
+                                    {% endif %}</a>
+                                    </li>
+                                  <ul>
+                            </div>
+                            <!-- <div class="widget_list widget_filter">
+                                <h2>Filter By</h2>
+                                 <div class="filter__list slider_range">
+                                    <h3>price</h3>
+                                    <form action="#">
+                                        <div id="slider-range"></div>
+                                        <span>Range:</span>
+                                        <input type="text" name="text" id="amount" />
+
+                                    </form>
+                                 </div>
+
+                                <div class="filter__list widget_size">
+                                    <h3> size</h3>
+                                    <ul>
+                                        <li>
+                                            <a href="javascript:void(0)">S </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)"> M</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">L</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)"> XL</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)">XLL</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="filter__list widget_color">
+                                    <h3>color</h3>
+                                     <ul>
+                                       <li>
+                                            <input type="checkbox">
+                                            <span class="checkmark color1"></span>
+                                        </li>
+                                        <li>
+                                            <input type="checkbox">
+                                            <span class="checkmark color2"></span>
+                                        </li>
+                                        <li>
+                                            <input type="checkbox">
+                                            <span class="checkmark color3"></span>
+                                        </li>
+                                        <li>
+                                            <input type="checkbox">
+                                            <span class="checkmark color4"></span>
+                                        </li>
+                                        <li>
+                                            <input type="checkbox">
+                                            <span class="checkmark color5"></span>
+                                        </li>
+                                        <li>
+                                            <input type="checkbox">
+                                            <span class="checkmark color6"></span>
+                                        </li>
+                                        <li>
+                                            <input type="checkbox">
+                                            <span class="checkmark color7"></span>
+                                        </li>
+                                        <li>
+                                            <input type="checkbox">
+                                            <span class="checkmark color8"></span>
+                                        </li>
+                                    </ul>
+                                </div> -->
+                                  <!-- <div class="filter__list widget_brands">
+                                    <h3 data-toggle="collapse" data-target="#brands">brands</h3>
+                                    <ul class="widget_dropdown_categories collapse show" id="brands">
+                                        <li><a href="#"> The North Face <span>104</span></a></li>
+                                        <li><a href="#">Zara Basic <span>68</span></a></li>
+                                        <li><a href="#">Moschino <span>75</span></a></li>
+                                        <li><a href="#">Supreme <span>30</span></a></li>
+                                        <li><a href="#">Ecko Unltd <span>150</span></a></li>
+                                    </ul>
+                                </div>
+                            </div> -->
+                            <div class="widget_list">
+                                {% recently_viewed_product current_product=product %}
+                            </div>
+                        </div>
+                    </aside>
+                    <!--sidebar widget end-->
+                </div>
+                <!--sidebar widget end-->
+                <div class="col-lg-9 col-md-12">
+                    <!--shop wrapper start-->
+
+                    <!--breadcrumbs area start-->
+
+                    <!-- <div class="breadcrumb_content">
+                        <ul>
+                            <li><a href="index.html">home</a></li>
+                            <li>shop</li>
+                        </ul>
+                    </div> -->
+                    <!--breadcrumbs area end-->
+
+                    <div class="shop_banner d-flex align-items-center" data-bgimg="{% static 'codefyn-5.0/assets/img/bg/shop_bg.jpg' %}">
+                        <div class="shop_banner_text">
+                            <h2>essential <br> wears</h2>
+                            <p>The collections basic items <br> essential for all girls</p>
+                        </div>
+                    </div>
+                    <!--shop toolbar start-->
+                    <div class="shop_toolbar_wrapper d-flex justify-content-between align-items-center">
+                        <div class="page_amount">
+                            <p><span>
+                                {% if paginator.count %}
+                                    {% if paginator.num_pages > 1 %}
+                                        {% blocktrans with start=page_obj.start_index end=page_obj.end_index count num_results=paginator.count %}
+                                            <strong>{{ num_results }}</strong> result - showing <strong>{{ start }}</strong> to <strong>{{ end }}</strong>.
+                                        {% plural %}
+                                            <strong>{{ num_results }}</strong> results - showing <strong>{{ start }}</strong> to <strong>{{ end }}</strong>.
+                                        {% endblocktrans %}
+                                    {% else %}
+                                        {% blocktrans count num_results=paginator.count %}
+                                            <strong>{{ num_results }}</strong>
+                                        {% plural %}
+                                            <strong>{{ num_results }}</strong>
+                                        {% endblocktrans %}
+                                    {% endif %}
+                                    {% if form %}
+                                        <div class="float-right">
+                                            {% include "oscar/partials/form_field.html" with field=form.sort_by style='horizontal' %}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <p>
+                                        {% trans "<strong>0</strong>" %}
+                                    </p>
+                                {% endif %}</span> Products Found</p>
+                        </div>
+                        <div class=" sorting_by d-flex align-items-center">
+                            <span>SORT BY :</span>
+                            <form class="select_option" action="#">
+                                <!-- <select name="orderby" id="short">
+
+                                    <option selected value="1">NAME       3</option>
+                                    <option  value="2">NAME  4</option>
+                                    <option value="3">NAME  5</option>
+                                    <option value="4">NAME  6</option>
+                                    <option value="5">NAME  7</option>
+                                    <option value="6">NAME  8</option>
+                                </select> -->
+                            </form>
+                        </div>
+                        <div class="toolbar_btn_wrapper d-flex align-items-center">
+                            <!-- <div class="view_btn">
+                                <a class="view" href="#">VIEW</a>
+                            </div> -->
+                            <div class="shop_toolbar_btn">
+                                <ul class="d-flex align-items-center">
+                                    <li><a href="#" class="active btn-grid-3" data-role="grid_3" data-tippy="3"  data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-grid"></i></a></li>
+                                    <li><a href="#" class="btn-list" data-role="grid_list" data-tippy="List" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-navicon"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                     <!--shop toolbar end-->
+                     {% if products %}
+                     <div class="row shop_wrapper">
+                        {% for product in products %}
+                       <div class="col-lg-4 col-md-4 col-sm-6 col-6 ">
+                        {% render_product2 product %}
+                        {% endfor %}
+                        {% include "oscar/partials/pagination.html" %}
+                        {% else %}
+                            <p class="nonefound">{% trans "No products found." %}</p>
+                        {% endif %}
+                    <!--shop wrapper end-->
+                </div>
+            </div>
+        </div>
+
+    <!--shop  area end-->
+{% endif %}
+{% endblock content %}
+
+{% block onbodyload %}
+    {{ block.super }}
+    oscar.search.init();
+{% endblock %}

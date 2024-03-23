@@ -1,0 +1,22 @@
+{% load i18n %}
+
+
+ <div class="col-lg-10 pt-2">
+    <form method="GET" action="{% url 'search:search' %}">
+      <div class="input-group flex-column flex-sm-row mb-3">
+        <input
+          class="form-control form-control-lg py-3"
+          class="form-control mr-sm-2" name="q" placeholder="{% trans 'Search' %}" aria-label="{% trans 'Search' %}"
+        />
+        <div class="input-group-append">
+          <button
+            class="btn btn-dark btn-block"
+            id="button-addon2"
+            type="submit"
+          >
+          <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>

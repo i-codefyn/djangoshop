@@ -1,0 +1,32 @@
+{% load i18n %} {% load image_tags %} {% with all_images=product.get_all_images %}
+ {# use length rather then count as the images get queried anyways #}
+
+{% if all_images|length > 1 %}
+
+<div class="product_zoom_gallery">
+  <div class="zoom_gallery_inner d-flex">
+    <div class="zoom_tab_img">
+      {% for image in all_images %}
+      <a class="zoom_tabimg_list" href="javascript:void(0)">
+        {% oscar_thumbnail image.original "65x55" crop="center" as thumb %}
+        <img src="{{ thumb.url }}" alt="tab-thumb"
+      /></a>
+      {% endfor %}
+    </div>
+    <div class="product_zoom_main_img">
+      {% for image in all_images %}
+      <div class="product_zoom_thumb">
+        {% oscar_thumbnail image.original "440x400" upscale=False as thumb %}
+        <img
+          style="width: 440px"
+          data-image="{{ thumb.url }}"
+          src="{{ thumb.url }}"
+          alt="{{ product.get_title }}"
+        />
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endif %} {% endwith %}

@@ -1,0 +1,18 @@
+{% load currency_filters %}
+{% load i18n %}
+{% load purchase_info_tags %}
+
+{% purchase_info_for_product request product as session %}
+
+{% if session.price.exists %}
+    {% if session.price.excl_tax == 0 %}
+    <div class="text-warning">
+        <span class="text-success">{% trans "Free" %}</span>
+    {% elif session.price.is_tax_known %}
+        <span class="text-success">{{ session.price.incl_tax|currency:session.price.currency }}</span>
+    {% else %}
+        <span class="text-success">{{ session.price.excl_tax|currency:session.price.currency }}</span>
+    {% endif %}
+{% else %}
+    <span class="text-success">&nbsp;</span>
+{% endif %}

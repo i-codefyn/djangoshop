@@ -1,0 +1,86 @@
+<!-- SERVICES-->
+<section class="py-5 bg-light">
+    <div class="row text-center">
+      <div class="col-lg-4 mb-3 mb-lg-0">
+        <div class="d-inline-block">
+          <div class="media align-items-end">
+            <i class="bi bi-truck"></i>
+            <div class="media-body text-left ml-3">
+              <h6 class="text-uppercase mb-1">Free shipping</h6>
+              <p class="text-small mb-0 text-muted">Free shipping worlwide</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 mb-3 mb-lg-0">
+        <div class="d-inline-block">
+          <div class="media align-items-end">
+            <i class="bi bi-truck"></i>
+            <div class="media-body text-left ml-3">
+              <h6 class="text-uppercase mb-1">24 x 7 service</h6>
+              <p class="text-small mb-0 text-muted">Free shipping worlwide</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="d-inline-block">
+          <div class="media align-items-end">
+            <i class="bi bi-patch-check"></i>
+            <div class="media-body text-left ml-3">
+              <h6 class="text-uppercase mb-1">Festival offer</h6>
+              <p class="text-small mb-0 text-muted">Free shipping worlwide</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+<!-- NEWSLETTER-->
+<section class="py-5">
+  <div class="container p-0">
+    <div class="row">
+      <div class="col-lg-6 mb-3 mb-lg-0">
+        <h5 class="text-uppercase">Let's be friends!</h5>
+        <p class="text-small text-muted mb-0">
+         Welcome to Codefyn
+        </p>
+      </div>
+      <div class="col-lg-6">
+        <form   method="post"
+        id="SubscribeForm"
+         action=""
+        enctype="multipart/form-data">
+        {% csrf_token %}
+          <div class="input-group flex-column flex-sm-row mb-3">
+            <input
+              class="form-control form-control-lg py-3"
+              type="email"
+              placeholder="Enter your email address"
+              aria-describedby="button-addon2"
+            />
+            <div class="input-group-append">
+              <button
+                class="btn btn-main btn-block"
+                id="button-addon2"
+                type="submit"
+              >
+                Subscribe
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  // FOrm Submit
+  $(document).ready(function () {
+    $(".preloader").hide();
+    $("#SubscribeForm").on("submit", function () {
+      $(".preloader").fadeIn();
+    }); //submit
+  });
+  // end form submit
+</script>

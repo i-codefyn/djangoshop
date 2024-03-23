@@ -1,0 +1,377 @@
+{% extends "oscar/layout.html" %}
+{% load history_tags %}
+{% load currency_filters %} {% load reviews_tags %} {% load product_tags %}
+{% load display_tags %} {% load i18n %} {% load purchase_info_tags %} {% block title %}
+{{ product.get_meta_title }} | {{ block.super }} {% endblock %}
+{% block description %} {{ product.get_meta_description }} {% endblock %}
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{{ homepage_url }}">{% trans "Home" %}</a>
+    </li>
+    {% with category=product.get_categories.first %}
+    {% for c in category.get_ancestors_and_self %}
+    <li class="breadcrumb-item">
+      <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+    </li>
+    {% endfor %}
+    <li class="breadcrumb-item active" aria-current="page">
+      {{ product.get_title }}
+    </li>
+
+    {% get_back_button as backbutton %} {% if backbutton %}
+    <li class="ml-auto">
+      <a href="{{ backbutton.url }}">
+        <i class="fas fa-arrow-left"></i> {{ backbutton.title }}
+      </a>
+    </li>
+    {% endif %} {% endwith %}
+  </ol>
+</nav>
+{% endblock %} {% block header %} {% endblock header %} {% block content %}
+
+<!--product details start-->
+<section class="product_details mb-135">
+  <div class="container">
+    <div class="row">
+      {% block product_gallery %}
+      <div class="col-lg-6 col-md-6">
+        {% include "oscar/catalogue/partials/gallery.html" %}
+      </div>
+      {% endblock %} {% block product_main %}
+      <div class="col-lg-6 col-md-6">
+        {% comment %} This is a bit clunky here. Better to have some kind of
+        JS-driven dashboard menu that pops out when clicked. A bit like the
+        Django-Debug-Toolbar button {% endcomment %} {% if user.is_staff %}
+        <a
+          class="float-right d-none d-md-block"
+          href="{% url 'dashboard:catalogue-product' pk=product.id %}"
+        >
+          <small><i class="fas fa-pencil-alt"></i> {% trans "Edit this product"  %}</small>
+        </a>
+        {% endif %}
+        <div class="product_d_right">
+          <form action="#">
+            <h1>{{ product.get_title }}</h1>
+            <div class="product_ratting_review d-flex align-items-center">
+              <div class="product_review">
+                <ul class="d-flex">
+                  {% iffeature "reviews" %}
+                  {% include "oscar/catalogue/reviews/partials/review_stars.html" %}
+                  {% endiffeature %}
+                  <!-- <li>4 reviews</li>
+                                    <li>Write your review</li> -->
+                </ul>
+              </div>
+            </div>
+            {% purchase_info_for_product request product as session %}
+            <div class="price_box">
+              {% if session.price.exists %}
+              {% if session.price.excl_tax == 0 %}
+              <span class="current_price">{% trans "Free" %}</span>
+              {% elif session.price.is_tax_known %}
+              <span class="current_price">{{ session.price.incl_tax|currency:session.price.currency }}</span>
+              {% else %}
+              <span class="current_price">{{ session.price.excl_tax|currency:session.price.currency }}</span>
+              {% endif %}
+              {% else %}
+              <span class="current_price">&nbsp;</span>
+              {% endif %}
+            </div>
+            {% block product_stock_record %}
+            {% include "oscar/catalogue/partials/stock.html" with verbose=1 %}
+            {% endblock %}
+            <div class="product_variant">
+                            <div class="filter__list widget_color d-flex align-items-center">
+
+                                    <h3>COLOR : </h3>
+                                    <select onchange="this.className=this.options[this.selectedIndex].className" class="placeholder">
+                                       <option value="" {% if color.colour == color.colour %} selected {% endif %} class="placeholder" disabled>Colors</option>
+                                        {% for color in product.colour %}
+                                       <option value="{{ color.id }}" class="">{{color}}</option>
+                                        {% endfor %}
+                                    </select>
+                            </div>
+                            </div>
+            <!-- <div class="filter__list widget_size d-flex align-items-center">
+                                <h3>select size</h3>
+                                <ul>
+                                    <li>
+                                        <a href="javascript:void(0)">S </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0)"> M</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0)">L</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0)"> XL</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0)">XLL</a>
+                                    </li>
+                                </ul>
+                            </div> -->
+
+            <div class="variant_quantity_btn d-flex">
+              <div>
+                {% if not product.is_parent %} {% block product_basket_form %}
+                {% include "oscar/catalogue/partials/add_to_basket_form.html" %}
+                {% endblock %} {% else %} {% block variants %}
+                <h2>{% trans 'Variants:' %}</h2>
+                {% for child in product.children.public %}
+                {% purchase_info_for_product request child as child_session %}
+                {% if child_session.availability.is_available_to_buy %}
+                <a href="{{ child.get_absolute_url }}">{{ child.get_title }}</a
+                ><br />
+                {% endif %} {% endfor %} {% endblock %} {% endif %}
+              </div>
+            </div>
+            <div class="product_sku">
+              <p><span>SKU: </span> {{product.upc}}</p>
+            </div>
+            <!-- <div class="product_tags d-flex">
+              <span>tags: </span>
+              <ul class="d-flex">
+                <li><a href="#">fashion,</a></li>
+                <li><a href="#">clothings,</a></li>
+                <li><a href="#">accessorires</a></li>
+              </ul>
+            </div> -->
+            <!-- <div class="priduct_social d-flex">
+              <span>SHARE: </span>
+              <ul>
+                <li>
+                  <a href="#"><i class="ion-social-twitter"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="ion-social-facebook"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="ion-social-googleplus-outline"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="ion-social-pinterest"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="ion-social-instagram-outline"></i></a>
+                </li>
+              </ul>
+            </div> -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--product details end-->
+
+<!--product info start-->
+{% block product_info %}
+<div class="product_d_info mb-118">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="product_d_inner">
+          <div class="product_info_button border-bottom">
+            <ul class="nav" role="tablist">
+              <li>
+                <a
+                  class="active"
+                  data-toggle="tab"
+                  href="#info"
+                  role="tab"
+                  aria-controls="info"
+                  aria-selected="false"
+                  >{% trans "Product Information" %}</a
+                >
+              </li>
+              {% iffeature "reviews" %}
+              <li>
+                <a
+                  data-toggle="tab"
+                  href="#reviews"
+                  role="tab"
+                  aria-controls="reviews"
+                  aria-selected="false"
+                  >{% trans "Reviews" %}</a
+                >
+              </li>
+              {% endiffeature %}
+              <li>
+                <a
+                  data-toggle="tab"
+                  href="#price_tags"
+                  role="tab"
+                  aria-controls="price_tags"
+                  aria-selected="false"
+                  >{% trans "Price Tags" %}
+                </a>
+              </li>
+              <li>
+                <a
+                  data-toggle="tab"
+                  href="#stocks"
+                  role="tab"
+                  aria-controls="stocks"
+                  aria-selected="false"
+                  >{% trans "Stocks" %}
+                </a>
+              </li>
+              <li>
+                <a
+                  data-toggle="tab"
+                  href="#catagory"
+                  role="tab"
+                  aria-controls="catagory"
+                  aria-selected="false"
+                  >{% trans "Category" %}
+                </a>
+              </li>
+              <li>
+                <a
+                  data-toggle="tab"
+                  href="#attribute"
+                  role="tab"
+                  aria-controls=" attribute"
+                  aria-selected="false"
+                  >{% trans "Attribute" %}
+                </a>
+              </li>
+            </ul>
+          </div>
+          {% endblock %}
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="info" role="tabpanel">
+              {% block product_description %} {% if product.description %}
+              <div class="product_info_content">
+                <p>{{ product.description|safe }}</p>
+              </div>
+              {% endif %} {% endblock %}
+            </div>
+            <!-- Review Start -->
+
+            <div class="tab-pane fade" id="reviews" role="tabpanel">
+              <div class="reviews_wrapper">
+                {% iffeature "reviews" %}
+                <h3>Number of reviews - {{ product.num_approved_reviews }}</h3>
+                {% block product_review %}
+                <div class="reviews_comment_box">
+                  <section>
+                    <div id="reviews" class="sub-header">
+                      {% if product.num_approved_reviews > 3 %}
+                      <a
+                        href="{% url 'catalogue:reviews-list' product_slug=product.slug product_pk=product.id %}"
+                        class="btn pull-right"
+                        >{% trans "See all reviews" %}</a
+                      >
+                      {% endif %}
+                      <h2>{% trans "Customer Reviews" %}</h2>
+                    </div>
+                    {% if product.num_approved_reviews == 0 %}
+                    <p>
+                      {% if product|is_review_permitted:user %}
+                      {% url 'catalogue:reviews-add' product_slug=product.slug product_pk=product.id as add_review_url %}
+
+                      {% blocktrans %}This product does not have any reviews yet -
+                      <a class="btn btn-success" href="{{ add_review_url }}#addreview"
+                        >be the first to write one</a
+                      >. {% endblocktrans %} {% else %}
+                      {% trans "This product does not have any reviews yet" %}.
+                      {% endif %}
+                    </p>
+                    {% else %}
+                    <ol class="list-unstyled review-list">
+                      {% for review in product.reviews.approved.all|slice:":3" %}
+                      <li>
+                        {% include 'oscar/catalogue/partials/review.html' %}
+                      </li>
+                      {% endfor %}
+                    </ol>
+                  </section>
+                </div>
+                {% endif %}
+              </div>
+              {% endblock product_review %}
+              {% endiffeature %}
+            </div>
+
+            </div>
+            <!-- Review End -->
+
+
+            <div class="tab-pane fade show" id="price_tags" role="price_tags">
+
+              {% purchase_info_for_product request product as session %}
+              {% if session.price.exists %}
+              <div class="text-success">
+                <p>
+                  Price Excluding Tax: {{ session.price.excl_tax|currency:session.price.currency }}
+                </p>
+                {% endif %}
+              </div>
+
+              {% purchase_info_for_product request product as session %}
+             {% if session.price.exists %}
+              <div class="text-success">
+                {% if session.price.is_tax_known %}
+                <p class="text-success">
+                  Price including Tax: {{ session.price.incl_tax|currency:session.price.currency }}
+                </p>
+                <p class="text-success">
+                 Tax:{{ session.price.tax|currency:session.price.currency }}</p>
+                {% endif %}
+              </div>
+
+              {% endif %}
+            </div>
+
+            <!-- Price Tags -->
+            <div class="tab-pane fade show" id="stocks" role="stocks">
+              <div class="product_info_content">
+                <p class="text-success" >{{ session.availability.message }}</p>
+              </div>
+            </div>
+            <!-- attribue -->
+            {% for av in product.attribute_values.all %}
+            <div class="tab-pane fade show" id="attribute" role="attribute">
+              <div class="product_info_content">
+                <p>{{ av.attribute.name }}</p>
+                <p>{{ av.value_as_html }}</p>
+                {% endfor %}
+                <!-- Price Tags -->
+                <div class="tab-pane fade show" id="catagory" role="catagory">
+                  <div class="product_info_content">
+                    <p>{{ product.get_product_class.name }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    <!--product info end-->
+<div class="mt-3 bg-light">
+    {% with recommended_products=product.sorted_recommended_products|slice:":6" %}
+    {% if recommended_products %}
+    <div class="sub-header">
+      <h2>{% trans "Recommended items" %}</h2>
+    </div>
+    <ul class="row list-unstyled mx-0">
+      {% for product in recommended_products %}
+      <li class="col-sm-6 col-md-4 col-lg-3">{% render_product product %}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
+    <div class="mt-3 bg-light border-top">
+    {% recently_viewed_products current_product=product %}
+  </div>
+    {% endblock %}
+    {% endblock content %}
+    {% block extrascripts %} {{ block.super }} {% endblock %}
+  </div>
+</div>
+</div>

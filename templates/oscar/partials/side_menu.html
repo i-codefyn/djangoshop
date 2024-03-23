@@ -1,0 +1,126 @@
+ <!--offcanvas menu area start-->
+ {% load history_tags %}
+ {% load basket_tags %}
+ {% load currency_filters %}
+ {% load image_tags %}
+ {% load category_tags %}
+ {% load i18n %}
+ <div class="offcanvas_menu sidebar">
+     <div class="container">
+         <div class="row">
+             <div class="col-12">
+                 <div class="offcanvas_menu_wrapper">
+                     <div class="canvas_close">
+                         <a href="javascript:void(0)"><i class="ion-android-close"></i></a>
+                     </div>
+                     <div class="header_contact_info">
+                         <ul class="d-flex">
+                             <li class="text-white"> <i class="bi bi-telephone mr-2"></i><a href="tel:+05483716566">+917992200751
+                                    </a></li>
+                             <li class="text-white"> <i class="bi bi-envelope-paper mr-2"></i><a
+                                     href="#">info@fixenix.com</a></li>
+                         </ul>
+                     </div>
+                     <div class="header_social d-flex">
+                         <span>Follow us</span>
+                         <ul class="d-flex">
+                            <li><a href="#"><i class="bi bi-twitter"></i></a></li>
+                            <li><a href="#"><i class="bi bi-facebook"></i></a></li>
+                            <li><a href="#"><i class="bi bi-instagram"></i></a></li>
+                            <li><a href="#"><i class="bi bi-youtube"></i></a></li>
+                         </ul>
+                     </div>
+                     <div class="language_currency">
+                         <ul class="d-flex">
+                            <li class="language">
+                                {% block nav_account_languages %}
+                                {% if LANGUAGES|length > 0 %}
+                                <form id="language_selector"  action="{% url 'set_language' %}" method="post">
+                                  {% csrf_token %}
+                                  <input name="next" type="hidden" value="{{ language_neutral_url_path }}" />
+                                  <select name="language"  class="language">
+                                    {% get_language_info_list for LANGUAGES as languages %}
+                                    {% for language in languages %}
+                                        <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE%} selected="selected"{% endif %}>
+                                            {{ language.name_local }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                              </form>
+                              {% endif %}
+                              {% endblock %}
+                              </li>
+                             <!-- <li class="currency"><a href="#"> USd <i class="icon-right ion-ios-arrow-down"></i></a>
+                                 <ul class="dropdown_currency">
+                                     <li><a href="#">€ Euro</a></li>
+                                     <li><a href="#">£ Pound Sterling</a></li>
+                                     <li><a href="#">$ US Dollar</a></li>
+                                 </ul>
+                             </li> -->
+                         </ul>
+                     </div>
+                     <div id="menu" class="text-left ">
+                         <ul class="offcanvas_main_menu">
+                             <li class="menu-item-has-children active">
+                                <a href="{% url 'home:index'%}">Home</a>
+                             </li>
+                             {% block navbar_collapse %}
+                             {% block nav %}
+                             {% block nav_items %}
+                             <li class="menu-item-has-children">
+                                <a href="#">{% block browse_store_text %}{% trans "Categories" %}{% endblock %}</a>
+                                <ul class="sub-menu">
+                            {% category_tree depth=1 as tree_categories %}
+                           <li>
+                            <a class="dropdown-item" href="{% url 'catalogue:index' %}">
+                                {% trans "All products" %}</a>
+                            </li>
+                            {% if tree_categories %}
+                          <li>
+                            {% for tree_category in tree_categories %}
+                            <a class="dropdown-item" href="{{ tree_category.get_absolute_url }}">
+                              {{ tree_category.name }}</a>
+                        {% endfor %}
+                       </li>
+                  {% endif %}
+                       <div class="dropdown-divider"></div>
+                {% block nav_dropdown_extra_items %}
+            <li><a class="dropdown-item" href="{% url 'offer:list' %}">{% trans "Offers" %}</a>
+            </li>
+            <li> <a href="{% url 'offer:list' %}">
+              <img src="/static/codefyn-5.0/assets/img/offers/top-banner.jpg" alt=""></a>
+            </li>
+            {% endblock %}
+                                </ul>
+                            </li>
+                            {% endblock %}
+                            {% endblock %}
+                        {% endblock %}
+                             <li class="menu-item-has-children">
+                            <a class="" href="{% url 'catalogue:index' %}">{% trans "Products" %}</a>
+                             </li>
+                             <li class="menu-item-has-children">
+                                <a href="{% url 'offer:list' %}">{% trans "Offers" %}</a>
+                             </li>
+
+
+                             <li class="menu-item-has-children">
+                                 <a href="#">Support</a>
+                                 <ul class="sub-menu">
+                                    <li><a href="{% url 'home:faq'%}">Faqs</a></li>
+                                    <li><a href="{% url 'home:contact' %}">Contact Us</a></li>
+                                    <li><a href="{% url 'home:feedback' %}">FeedBack</a></li>
+                                    <li><a href="{% url 'home:terms' %}">Terms And Conditions</a></li>
+
+                                 </ul>
+
+                             </li>
+
+                         </ul>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
+ <!--offcanvas menu area end-->

@@ -1,0 +1,23 @@
+{% load reviews_tags %}
+{% load i18n %}
+
+{% if product.rating != None %}
+    <p class="star-rating {{ product.rating|as_stars }}">
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-fill"></i>
+        <small><a href="{% url 'catalogue:reviews-list' product_slug=product.slug product_pk=product.id %}">
+                {% blocktrans count product.num_approved_reviews as num_reviews %}
+                    {{ num_reviews }} customer review
+                {% plural %}
+                    {{ num_reviews }} customer reviews
+                {% endblocktrans %}
+        </a></small>
+        &nbsp;
+{% else %}
+
+{% endif %}
+
+

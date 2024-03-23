@@ -1,0 +1,55 @@
+{% extends "oscar/checkout/checkout.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Payment details" %} | {{ block.super }}
+{% endblock %}
+
+{% block checkout_nav %}
+    {% include 'oscar/checkout/nav.html' with step=3 %}
+{% endblock %}
+
+{% block checkout_title %}{% trans "Select Payment details" %}{% endblock %}
+
+{% block order_contents %}{% endblock %}
+{% block shipping_address %}{% endblock %}
+{% block shipping_method %}{% endblock %}
+{% block payment_method %}
+<!-- <form action="" method="post">
+    {% csrf_token %}
+
+    {% if form.payment_method.errors %}{{ form.payment_method.errors }}{% endif %}
+    <div class="radio">
+        <label for="id_payment_method_0">
+            <input id="id_payment_method_0" name="payment_method" type="radio" value="cod" required="">{% trans "Cash on delivery" %}
+        </label>
+    </div>
+    <div class="radio">
+        <label for="id_payment_method_1">
+            <input id="id_payment_method_1" name="payment_method" type="radio" value="custom_payment" required="">{% trans "Credit / Debit Card" %}
+        </label>
+    </div>
+    <p><button type="submit" class="btn btn-large btn-primary">{% trans "Continue to confirmation" %}</button>
+
+</form> -->
+{% if anon_checkout_allowed or request.user.is_authenticated %}
+<a class="btn btn-success" href="{% url 'rzpay:razorpay-direct-payment' %}">Razor Pay check out</a>
+<!-- <img src="/static/codefyn-5.0/assets/img/paypal.jpg"  style="margin-right:7px; height: 60px; width: 160px;" class="rounded"></a> -->
+{% endif %}
+{% endblock %}
+
+{% block payment_details %}
+
+
+    {% block payment_details_content %}
+    <form action="{% url 'checkout:preview' %}" class="form-stacked" method="POST">
+    <!-- <form action="{% url 'checkout:preview' %}" class="form-stacked" method="POST"> -->
+        {% csrf_token %}
+
+        <div class="form-actions">
+            <button type="submit" class="pull-right btn btn-large btn-primary">{% trans "Proceed to checkout" %}</a>
+        </div>
+        <!-- <a id="view_preview" href="{% url 'checkout:preview' %}" class="btn btn-primary btn-lg">{% trans "Continue" %}</a> -->
+    </form>
+    {% endblock %}
+{% endblock payment_details %}

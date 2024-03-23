@@ -1,0 +1,51 @@
+{% extends "oscar/layout.html" %}
+{% load i18n %}
+{% load category_tags %}
+
+{% block layout %}
+
+    <header class="header">
+        <div class="page_inner p-1 px-3">
+            <div class="row">
+        <div class="header_logo">
+       <a class="sticky_none" href="{{ homepage_url }}">
+    <img src="/static/codefyn-5.0/assets/img/logo/logo.svg" alt=""></a>
+</div>
+            </div><!-- /row -->
+        </div>
+        {% block checkout_nav %}{% endblock %}
+    </header><!-- /header -->
+
+    <div class="container page">
+       <div class="page_inner">
+            {% include 'oscar/partials/alert_messages.html' %}
+
+            <div class="sub-header p-3 text-center">
+                <h3>{% block checkout_title %}{% endblock %}</h3>
+            </div>
+
+            <!-- The main nav on checkout pages contain links to modal flatpages -->
+            {% block modal %}
+                {% load flatpages %}
+                {% get_flatpages '/order/' as flatpages %}
+                {% for page in flatpages %}
+                <div id="{{ page.title|slugify }}" class="modal hide fade">
+                    <div class="modal-header">
+                        <a class="close" data-dismiss="modal">×</a>
+                        <h3>{{ page.title }}</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="large-content">
+                            {{ page.content|safe }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endblock %}
+
+            {% block content %}{% endblock %}
+
+        </div><!-- /page_inner -->
+    </div>
+    {% include "oscar/partials/footer_checkout.html" %}
+{% endblock %}

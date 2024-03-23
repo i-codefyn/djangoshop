@@ -1,0 +1,10 @@
+{% load currency_filters %}
+{% load category_tags %}
+{% load i18n %}
+
+<nav  class="{% block nav_classes %}navbar navbar-expand-lg bg-white {% endblock %}">
+
+    {% block nav_extra %}
+    {% include "oscar/partials/nav_category.html" %}
+{% endblock %}
+</nav>

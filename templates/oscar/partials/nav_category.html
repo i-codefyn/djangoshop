@@ -1,0 +1,66 @@
+
+{% load history_tags %}
+{% load basket_tags %}
+{% load currency_filters %}
+{% load image_tags %}
+{% load category_tags %}
+{% load i18n %}
+<!--main menu start-->
+<div class="main_menu pb-3 d-none d-lg-block">
+    <nav>
+      <ul class="d-flex">
+        {% block navbar_collapse %}
+        {% block nav %}
+        {% block nav_items %}
+        <li>
+          <a data-bs-toggle="dropdown"
+          data-bs-display="static"
+          aria-expanded="false"
+          class="dropdown-toggle"
+          id="navbarDropdown"
+          role="button"> {% block browse_store_text %}{% trans "CATEGORIES" %}{% endblock %}</a>
+
+          <ul class="sub_menu">
+            {% category_tree depth=1 as tree_categories %}
+            <li> <a class="dropdown-item" href="{% url 'catalogue:index' %}">{% trans "All products" %}</a></li>
+            {% if tree_categories %}
+            <li> {% for tree_category in tree_categories %}
+              <a class="dropdown-item" href="{{ tree_category.get_absolute_url }}">{{ tree_category.name }}</a>
+          {% endfor %}
+        </li>
+        {% endif %}
+        <div class="dropdown-divider"></div>
+                                {% block nav_dropdown_extra_items %}
+            <li><a class="dropdown-item" href="{% url 'offer:list' %}">{% trans "Offers" %}</a>
+            </li>
+            <li> <a href="{% url 'offer:list' %}">
+              <img src="/static/codefyn-5.0/assets/img/offers/top-banner.jpg" alt=""></a>
+            </li>
+            {% endblock %}
+
+          </ul>
+        </li>
+        {% endblock %}
+        {% endblock %}
+    {% endblock %}
+        <li><a class="" href="{% url 'catalogue:index' %}">{% trans "Products" %}</a></li>
+        <li><a href="{% url 'offer:list' %}">{% trans "Offers" %}</a></li>
+        <li>
+          <a data-bs-toggle="dropdown"
+          data-bs-display="static"
+          aria-expanded="false"
+          class="dropdown-toggle"
+          id="navbarDropdown"
+          role="button">Support</a>
+          <ul class="sub_menu">
+            <li><a href="{% url 'home:faq'%}">Faqs</a></li>
+            <li><a href="{% url 'home:contact' %}">Contact Us</a></li>
+            <li><a href="{% url 'home:feedback' %}">FeedBack</a></li>
+            <li><a href="{% url 'home:terms' %}">Terms And Conditions</a></li>
+
+          </ul>
+        </li>
+
+      </ul>
+    </nav>
+  </div>

@@ -1,0 +1,309 @@
+{% extends "oscar/layout.html" %}
+{% load static %}
+{% load basket_tags %}
+{% load category_tags %}
+{% load product_tags %}
+{% load reviews_tags %}
+{% load image_tags %}
+{% load display_tags %}
+{% load i18n %}
+{% block content %}
+
+
+
+{% block shipping %}
+{% include 'home/slider.html' %}
+{% endblock %}
+
+
+{% block slider %}
+{% include 'home/shipping.html' %}
+{% endblock %}
+
+
+{% block banner %}
+{% include 'home/banner.html' %}
+{% endblock %}
+
+   <!-- product section start -->
+   <section class="product_section mb-96">
+       <div class="">
+           <div class="product_header d-flex justify-content-between  mb-50">
+               <div class="section_title">
+                   <h2>best selling items</h2>
+               </div>
+               <div class="product_tab_btn d-flex">
+                   <ul class="nav" role="tablist">
+                       <li>
+                           <a class="active" data-toggle="tab" href="#all" role="tab" aria-controls="all"
+                               aria-selected="true">
+                               All
+                           </a>
+                       </li>
+
+
+                       <li>
+                           <a data-toggle="tab" href="#featured" role="tab" aria-controls="shoes" aria-selected="false">
+                              Featured
+                           </a>
+                       </li>
+                       <li>
+                           <a data-toggle="tab" href="#popular" role="tab" aria-controls="accessories"
+                               aria-selected="false">
+                              Popular
+                           </a>
+                       </li>
+                   </ul>
+                   <div class="all_product">
+                       <a href="{% url 'catalogue:index' %}">All Product</a>
+                   </div>
+               </div>
+           </div>
+
+           <section>
+                   <ol class="row list-unstyled ml-0 pl-0">
+                       <div class="product_container row">
+                        {% if best_seller %}
+                           <div class="tab-content">
+                               <div class="tab-pane fade show active" id="all" role="tabpanel">
+                                   <div class="product_slick slick_slider_activation" data-slick='{
+                                       "slidesToShow": 4,
+                                       "slidesToScroll": 1,
+                                       "arrows": true,
+                                       "dots": false,
+                                       "autoplay": false,
+                                       "speed": 300,
+                                       "infinite": true,
+                                       "responsive":[
+                                         {"breakpoint":992, "settings": { "slidesToShow": 3 } },
+                                         {"breakpoint":768, "settings": { "slidesToShow": 2 } },
+                                         {"breakpoint":300, "settings": { "slidesToShow": 1 } }
+                                        ]
+                                   }'>
+
+                                   {% for product in best_seller %}
+
+                               {% render_product product %}
+
+                       {% endfor %}
+                    </div>
+                </ol>
+                {% include "oscar/partials/pagination.html" %}
+
+     {% else %}
+        <p class="nonefound">{% trans "No products found." %}</p>
+     {% endif %}
+   {% if products_featured %}
+   <div class="tab-content">
+                   <div class="tab-pane fade" id="featured" role="tabpanel">
+                       <div class="product_slick slick_slider_activation" data-slick='{
+                           "slidesToShow": 4,
+                           "slidesToScroll": 1,
+                           "arrows": true,
+                           "dots": false,
+                           "autoplay": false,
+                           "speed": 300,
+                           "infinite": true ,
+                           "responsive":[
+                             {"breakpoint":992, "settings": { "slidesToShow": 3 } },
+                             {"breakpoint":768, "settings": { "slidesToShow": 2 } },
+                             {"breakpoint":300, "settings": { "slidesToShow": 1 } }
+                            ]
+                       }'>
+
+                       {% for product in  products_featured %}
+
+                       {% render_product product %}
+
+               {% endfor %}
+
+        </div>
+    </ol>
+    {% include "oscar/partials/pagination.html" %}
+
+{% else %}
+<p class="nonefound">{% trans "No products found." %}</p>
+{% endif %}
+{% if products_popular %}
+<div class="tab-content">
+    <div class="tab-pane fade" id="popular" role="tabpanel">
+        <div class="product_slick slick_slider_activation" data-slick='{
+                           "slidesToShow": 4,
+                           "slidesToScroll": 1,
+                           "arrows": true,
+                           "dots": false,
+                           "autoplay": false,
+                           "speed": 300,
+                           "infinite": true ,
+                           "responsive":[
+                             {"breakpoint":992, "settings": { "slidesToShow": 3 } },
+                             {"breakpoint":768, "settings": { "slidesToShow": 2 } },
+                             {"breakpoint":300, "settings": { "slidesToShow": 1 } }
+                            ]
+                       }'>
+
+                       {% for product in  products_popular %}
+                       {% render_product product %}
+               {% endfor %}
+           </div>
+           </ol>
+           {% include "oscar/partials/pagination.html" %}
+
+{% else %}
+   <p class="nonefound">{% trans "No products found." %}</p>
+{% endif %}
+   </section>
+   <!-- product section end -->
+   {% block banner2 %}
+   {% include 'home/banner2.html' %}
+   {% endblock %}
+   <!-- product section start -->
+   <section class="product_section mb-96">
+    <div class="">
+        <div class="product_header d-flex justify-content-between  mb-50">
+            <div class="section_title">
+                <h2>best selling items</h2>
+            </div>
+            <div class="product_tab_btn d-flex">
+                <ul class="nav" role="tablist">
+                    <li>
+                        <a class="active" data-toggle="tab" href="#all" role="tab" aria-controls="all"
+                            aria-selected="true">
+                            All
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a data-toggle="tab" href="#featured" role="tab" aria-controls="shoes" aria-selected="false">
+                           Featured
+                        </a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#popular" role="tab" aria-controls="accessories"
+                            aria-selected="false">
+                           Popular
+                        </a>
+                    </li>
+                </ul>
+                <div class="all_product">
+                    <a href="{% url 'catalogue:index' %}">All Product</a>
+                </div>
+            </div>
+        </div>
+
+        <section>
+                <ol class="row list-unstyled ml-0 pl-0">
+                    <div class="product_container row">
+                     {% if best_seller %}
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="all" role="tabpanel">
+                                <div class="product_slick slick_slider_activation" data-slick='{
+                                    "slidesToShow": 4,
+                                    "slidesToScroll": 1,
+                                    "arrows": true,
+                                    "dots": false,
+                                    "autoplay": false,
+                                    "speed": 300,
+                                    "infinite": true,
+                                    "responsive":[
+                                      {"breakpoint":992, "settings": { "slidesToShow": 3 } },
+                                      {"breakpoint":768, "settings": { "slidesToShow": 2 } },
+                                      {"breakpoint":300, "settings": { "slidesToShow": 1 } }
+                                     ]
+                                }'>
+
+                                {% for product in best_seller %}
+
+                            {% render_product product %}
+
+                    {% endfor %}
+                 </div>
+             </ol>
+             {% include "oscar/partials/pagination.html" %}
+
+  {% else %}
+     <p class="nonefound">{% trans "No products found." %}</p>
+  {% endif %}
+{% if products_featured %}
+<div class="tab-content">
+                <div class="tab-pane fade" id="featured" role="tabpanel">
+                    <div class="product_slick slick_slider_activation" data-slick='{
+                        "slidesToShow": 4,
+                        "slidesToScroll": 1,
+                        "arrows": true,
+                        "dots": false,
+                        "autoplay": false,
+                        "speed": 300,
+                        "infinite": true ,
+                        "responsive":[
+                          {"breakpoint":992, "settings": { "slidesToShow": 3 } },
+                          {"breakpoint":768, "settings": { "slidesToShow": 2 } },
+                          {"breakpoint":300, "settings": { "slidesToShow": 1 } }
+                         ]
+                    }'>
+
+                    {% for product in  products_featured %}
+
+                    {% render_product product %}
+
+            {% endfor %}
+
+     </div>
+ </ol>
+ {% include "oscar/partials/pagination.html" %}
+
+{% else %}
+<p class="nonefound">{% trans "No products found." %}</p>
+{% endif %}
+{% if products_popular %}
+<div class="tab-content">
+ <div class="tab-pane fade" id="popular" role="tabpanel">
+     <div class="product_slick slick_slider_activation" data-slick='{
+                        "slidesToShow": 4,
+                        "slidesToScroll": 1,
+                        "arrows": true,
+                        "dots": false,
+                        "autoplay": false,
+                        "speed": 300,
+                        "infinite": true ,
+                        "responsive":[
+                          {"breakpoint":992, "settings": { "slidesToShow": 3 } },
+                          {"breakpoint":768, "settings": { "slidesToShow": 2 } },
+                          {"breakpoint":300, "settings": { "slidesToShow": 1 } }
+                         ]
+                    }'>
+
+                    {% for product in  products_popular %}
+                    {% render_product product %}
+            {% endfor %}
+        </div>
+        </ol>
+        {% include "oscar/partials/pagination.html" %}
+
+{% else %}
+<p class="nonefound">{% trans "No products found." %}</p>
+{% endif %}
+</section>
+<!-- product section end -->
+{% block blogpost %}
+{% include 'home/blog.html' %}
+{% endblock %}
+
+
+   {% block newsletterblock %}
+   {% include "home/newsletter.html" %}
+   {% endblock %}
+
+   {% block footerblock %}
+   {% include "home/footer.html" %}
+   {% endblock %}
+
+
+
+{% endblock %}
+
+{% block onbodyload %}
+    {{ block.super }}
+    oscar.search.init();
+{% endblock %}

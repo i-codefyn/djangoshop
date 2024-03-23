@@ -1,0 +1,5 @@
+#define VERSION_MAJOR 2
+#define VERSION_MINOR 1
+#define VERSION_PATCHLEVEL 0
+#define VERSION_STRING "2.1"
+#define VERSION_DATE "2022-Aug-31"

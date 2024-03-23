@@ -1,0 +1,58 @@
+
+{% load history_tags %}
+{% load basket_tags %}
+{% load currency_filters %}
+{% load image_tags %}
+{% load i18n %}
+
+{% block nav_extra %}
+{% include "oscar/partials/search.html" %}
+{% endblock %}
+  <div class="header_account">
+    <ul class="d-flex">
+      <li class="header_search d-sm-block d-md-none">
+        <a href="#"><i class="bi bi-search"></i></a>
+      </li>
+      <li class="account_link">
+        <a href="#"><i class="icon-user icons"></i></a>
+        <ul class="dropdown_account_link">
+         {% if user.is_authenticated %}
+          <li><a href="{% url 'customer:summary' %}">
+            <i class="bi bi-person-lock mr-2"></i> {% trans "Account" %}</a></li>
+
+          {% if user.is_staff or perms.partner.dashboard_access %}
+                             <li >
+                                 <a href="{% url 'dashboard:index' %}" >
+                                    <i class="bi bi-house-lock mr-2"></i>
+                                     {% trans "Dashboard" %}
+                                 </a>
+                             </li>
+
+                         {% endif %}
+                         <li >
+                            <a id="logout_link" href="{% url 'customer:logout' %}">
+                                <i class="bi bi-box-arrow-in-right mr-2"></i>
+                                {% trans "Logout" %}
+                            </a>
+                        </li>
+                          {% endif %}
+                    {% if not user.is_authenticated %}
+                    <li">
+                        <a  href="{% url 'customer:login' %}" >
+                            <i class="bi bi-person-lock mr-2"></i>
+                            {% trans "Login/Register" %}
+                        </a>
+                    </li>
+            {% endif %}
+        </ul>
+      </li>
+<!-- page search box -->
+<div class="page_search_box">
+    <div class="search_close">
+      <i class="ion-close-round"></i>
+    </div>
+    <form class="border-bottom" method="GET" action="{% url 'search:search' %}">
+      <input class="border-0"  name="q" placeholder="{% trans 'Search' %}" aria-label="{% trans 'Search' %}" />
+      <button type="submit"><span class="icon-magnifier icons"></span></button>
+    </form>
+  </div>

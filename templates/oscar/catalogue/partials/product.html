@@ -1,0 +1,89 @@
+{% load display_tags %} {% load i18n %} {% load image_tags %}
+{% load reviews_tags %} {% block product %}
+
+<article class="col single_product">
+  <figure>
+    {% block product_image %}
+    <div class="product_thumb">
+      {% with image=product.primary_image %}
+      {% oscar_thumbnail image.original   "x155" upscale=False as thumb %}
+      <a  href="{{ product.get_absolute_url }}">
+        <img
+          src="{{ thumb.url }}"
+          alt="{{ product.get_title }}"
+
+        />
+      </a>
+      {% endwith %} {% endblock %}
+      <div class="product_action">
+        <ul>
+          <li class="wishlist">
+            <a
+              href="{% url 'customer:wishlists-add-product' product_pk=product.pk %}"
+              data-tippy="Wishlist"
+              data-tippy-inertia="true"
+              data-tippy-delay="50"
+              data-tippy-arrow="true"
+              data-tippy-placement="left"
+            >
+              <i class="icon-heart icons"></i
+            ></a>
+          </li>
+          <!--
+                                    <li class="quick_view"><a data-toggle="modal" data-target="#modal_box"
+                                            data-tippy="Quick View" href="{{ product.get_absolute_url }}" data-tippy-inertia="true"
+                                            data-tippy-delay="50" data-tippy-arrow="true"
+                                            data-tippy-placement="left"><i
+                                                class="icon-size-fullscreen icons"></i></a></li> -->
+          <!--
+                                    <li class="compare"><a data-tippy="Compare" href="#"
+                                            data-tippy-inertia="true" data-tippy-delay="50"
+                                            data-tippy-arrow="true" data-tippy-placement="left"><i
+                                                class="icon-refresh icons"></i></a></li> -->
+        </ul>
+      </div>
+      <div class="product_label">
+        <span>-20%</span>
+      </div>
+    </div>
+    <figcaption class="product_content text-center">
+      {% block product_review %} {% iffeature "reviews" %}
+      <div class="product_ratting">
+        <ul class="d-flex justify-content-center">
+          <p class="star-rating {{ product.rating|as_stars }}">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+          </p>
+        </ul>
+      </div>
+      {% endiffeature %} {% endblock %} {% block product_title %}
+      <h4 class="product_name">
+        <a
+          href="{{ product.get_absolute_url }}"
+          title="{{ product.get_title }}"
+        >
+          {{ product.get_title|truncatewords:4 }}
+        </a>
+      </h4>
+      {% endblock %} {% block product_price %}
+      <div class="price_box">
+        <span class="current_price">{% include "oscar/catalogue/partials/price.html" %}</span>
+                    <!-- <span class="old_price">$46.00</span> -->
+      </div>
+        <div class="price_box">
+        {% include "oscar/catalogue/partials/stock_record.html" %}
+      </div>
+      <div class="add_to_cart">
+        {% if not product.is_parent and not product.has_options %}
+        {% include "oscar/catalogue/partials/add_to_basket_form_compact.html" %}
+        {% endif %}
+      </div>
+      {% endblock %}
+    </figcaption>
+  </figure>
+</article>
+
+{% endblock %}

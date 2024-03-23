@@ -1,0 +1,121 @@
+{% load history_tags %} {% load basket_tags %} {% load currency_filters %}
+{% load image_tags %} {% load i18n %}
+{% load i18n product_tags %}
+{% load wishlist_tags %}
+{% if user.is_authenticated %}
+    <li>
+      <a href="{% url 'customer:wishlists-list' %}">
+        <i class="bi bi-bag-heart"></i>
+      </a>
+      <span class="item_count">
+        {% if wishlists %}
+        {% for wishlist in wishlists %}
+        {{ wishlist.lines.count }}
+    {% endfor %}
+    {% else %}
+    0
+    {% endif %}
+      </span>
+    </li>
+    {% endif %}
+    <li class="shopping_cart">
+      <a href="#">
+        <i class="bi bi-cart3"></i>
+      </a>
+      <span class="item_count">
+        {% if request.basket.num_lines %} {{ request.basket.num_lines }}
+        {% else %} 0 {% endif %}
+      </span>
+    </li>
+  </ul>
+</div>
+<!-- page search box -->
+<div class="page_search_box">
+  <div class="search_close">
+    <i class="ion-close-round"></i>
+  </div>
+  <form class="border-bottom" method="GET" action="{% url 'search:search' %}">
+    <input class="border-0"  name="q" placeholder="{% trans 'Search' %}" aria-label="{% trans 'Search' %}" />
+    <button type="submit"><i class="bi bi-search"></i></button>
+  </form>
+</div>
+<!--mini cart-->
+<div  class="mini_cart">
+  <div class="cart_gallery">
+    <div class="cart_close">
+      <div class="cart_text">
+        <strong>{% trans "Basket total:" %}</strong>
+        {% if request.basket.is_tax_known %}
+        {{ request.basket.total_incl_tax|currency:request.basket.currency }}
+        {% else %}
+        {{ request.basket.total_excl_tax|currency:request.basket.currency }}
+        {% endif %}
+      </div>
+      <div class="mini_cart_close">
+        <a href="javascript:void(0)"><i class="icon-close icons"></i></a>
+      </div>
+    </div>
+    {% if request.basket.num_lines %} {% for line in request.basket.all_lines %}
+    <div class="cart_item">
+      <div class="cart_img">
+        {% with image=line.product.primary_image %}
+        {% oscar_thumbnail image.original "100x100" upscale=False as thumb %}
+        <a href="{{ line.product.get_absolute_url }}">
+          <img
+            src="{{ thumb.url }}"
+            alt="{{ line.product.get_title }}"
+            class="img-thumbnail w-auto mx-auto my-0"
+          />
+        </a>
+        {% endwith %}
+      </div>
+      <div class="cart_info">
+        <a href="{{ line.product.get_absolute_url }}">{{ line.description }}</a>
+        {% trans "Qty" %}:{{ line.quantity }} x
+        <span>
+          {{ line.unit_price_excl_tax|currency:request.basket.currency }}</span
+        >
+      </div>
+      <!-- <div class="cart_remove">
+        <a href="#"><i class="icon-close icons"></i></a>
+      </div> -->
+    </div>
+    {% endfor %}
+    <div class="mini_cart_table">
+      <div class="cart_table_border">
+        <div class="cart_total mt-10">
+          {% if request.basket.is_tax_known %}
+          <span>{% trans "Total:" %} :</span>
+          <span class="price"
+            >{{ request.basket.total_incl_tax|currency:request.basket.currency  }}
+           </span
+          >
+          {% else %}
+          <span>{% trans "Total:" %}</span>
+          <span class="price"
+            >{{ request.basket.total_excl_tax|currency:request.basket.currency }}
+            </span
+          >
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="mini_cart_footer">
+      <div class="cart_button">
+        <a href="{% url 'basket:summary' %}"
+          ><i class="fa fa-shopping-cart mr-2"></i> {% trans "View basket" %}</a
+        >
+      </div>
+      <div class="cart_button">
+        <a href="{% url 'checkout:index' %}"
+          ><i class="fa fa-sign-in mr-2"></i> {% trans "Checkout" %}</a
+        >
+      </div>
+      {% else %}
+      <p>{% trans "Your basket is empty." %}</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!--mini cart end-->

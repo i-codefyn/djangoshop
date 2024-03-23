@@ -1,0 +1,38 @@
+{% load i18n %}
+{% load product_tags %}
+
+{% with products_sliced=products|slice:":6" %}
+    {% if products_sliced %}
+    <div class="text-center p-3 border-bottom mb-3">
+        <h3>{% trans 'Products you recently viewed' %}</h3>
+    </div>
+        <ol class="row list-unstyled ml-0 pl-0">
+            <div class="product_container row">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="all" role="tabpanel">
+                        <div class="product_slick slick_slider_activation" data-slick='{
+                            "slidesToShow": 4,
+                            "slidesToScroll": 1,
+                            "arrows": true,
+                            "dots": false,
+                            "autoplay": false,
+                            "speed": 300,
+                            "infinite": true,
+                            "responsive":[
+                              {"breakpoint":992, "settings": { "slidesToShow": 3 } },
+                              {"breakpoint":768, "settings": { "slidesToShow": 2 } },
+                              {"breakpoint":300, "settings": { "slidesToShow": 1 } }
+                             ]
+                        }'>
+
+                        {% for product in products_sliced %}
+                        <div>{% render_product product %}</div>
+                    {% endfor %}
+
+         </div>
+     </ol>
+
+
+{% endif %}
+
+{% endwith %}

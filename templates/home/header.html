@@ -1,0 +1,83 @@
+{% load i18n %}
+  <!--offcanvas menu area start-->
+  <div class="offcanvas_menu">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="offcanvas_menu_wrapper">
+                    <div class="canvas_close">
+                        <a href="javascript:void(0)"><i class="ion-android-close"></i></a>
+                    </div>
+                    <div class="header_contact_info">
+                        <ul class="d-flex">
+                            <li class="text-white"> <i class="icons icon-phone"></i> <a href="tel:+917992200751">+917992200751
+                                    +</a></li>
+                            <li class="text-white"> <i class="icon-envelope-letter icons"></i> <a
+                         href="#">info@codefyn.com</a></li>
+                        </ul>
+                    </div>
+                    <div class="header_social d-flex">
+                        <span>Follow us</span>
+                        <ul class="d-flex">
+                            <li><a href="#"><i class="icon-social-twitter icons"></i></a></li>
+                            <li><a href="#"><i class="icon-social-facebook icons"></i></a></li>
+                            <li><a href="#"><i class="icon-social-instagram icons"></i></a></li>
+                            <li><a href="#"><i class="icon-social-youtube icons"></i></a></li>
+                            <li><a href="#"><i class="icon-social-pinterest icons"></i></a></li>
+                        </ul>
+                    </div>
+                    <div class="language_currency">
+                        <ul class="d-flex">
+                            <li class="language"><a href="#"> Eng <i class="icon-right ion-ios-arrow-down"></i></a>
+                                <ul class="dropdown_language">
+                                    <li><a href="#">French</a></li>
+                                    <li><a href="#">Spanish</a></li>
+                                    <li><a href="#">Russian</a></li>
+                                </ul>
+                            </li>
+                            <li class="currency"><a href="#"> USd <i class="icon-right ion-ios-arrow-down"></i></a>
+                                <ul class="dropdown_currency">
+                                    <li><a href="#">€ Euro</a></li>
+                                    <li><a href="#">£ Pound Sterling</a></li>
+                                    <li><a href="#">$ US Dollar</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="menu" class="text-left ">
+                        <ul class="offcanvas_main_menu">
+                            <li class="menu-item-has-children active">
+                                <a href="#">Home</a>
+                            </li>
+
+                            <li class="menu-item-has-children">
+                                <a  class="active" href="{% url 'catalogue:index' %}">{% trans "Products" %}</a>
+                            </li>
+                            <li><a href="{% url 'offer:list' %}">{% trans "Offers" %}</a></li>
+                            <li class="menu-item-has-children">
+                                <a href="#">Support</a>
+                                <ul class="sub_menu">
+                                 <li><a href="cart.html">Faqs</a></li>
+                                 <li><a href="checkout.html">Contact Us</a></li>
+                                 <li><a href="checkout.html">FeedBack</a></li>
+                                 <li><a href="checkout.html">Terms And Conditions</a></li>
+                                 <li><a href="checkout.html">Disclamer</a></li>
+                               </ul>
+                            </li>
+                            <li class="menu-item-has-children">
+                                <a href="#">blog</a>
+                                <ul class="sub-menu">
+                                    <li><a href="blog.html">blog</a></li>
+                                    <li><a href="blog-details.html">blog details</a></li>
+                                </ul>
+
+                            </li>
+                            <li><a href="#">buy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--offcanvas menu area end-->
